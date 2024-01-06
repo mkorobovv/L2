@@ -7,3 +7,21 @@ type Event struct {
 	Description string `json:"description"`
 	Time        string `json:"time"`
 }
+
+type Error struct {
+	Err Details `json:"error"`
+}
+
+type Details struct {
+	ErrCode    int    `json:"code"`
+	ErrMessage string `json:"message"`
+}
+
+type Response struct {
+	Body Result `json:"result"`
+}
+
+type Result struct {
+	StatusCode int    `json:"code"`
+	Message    string `json:"message"`
+}
