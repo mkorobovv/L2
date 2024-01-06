@@ -86,3 +86,19 @@ func (c *Cache) GetMonth(date string) [][]*models.Event {
 	}
 	return response
 }
+
+func (c *Cache) Update(date, time string, newEvent *models.Event) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	_, ok := c.data[date]
+	if !ok {
+		return
+	}
+	for i := 0; i < len(c.data[date]); i++ {
+		if c.data[date][i].Time == time {
+			c.data[date][i] = newEvent
+		}
+	}
+
+}
