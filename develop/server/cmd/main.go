@@ -31,6 +31,9 @@ func main() {
 	mux.HandleFunc("/events_for_month", func(w http.ResponseWriter, r *http.Request) {
 		handlers.GetEventMonthHandler(w, r, cache)
 	})
+	mux.HandleFunc("/update_event", func(w http.ResponseWriter, r *http.Request) {
+		handlers.UpdateEventHandler(w, r, cache)
+	})
 
 	handler := Logger(mux)
 
