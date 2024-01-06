@@ -25,6 +25,12 @@ func main() {
 	mux.HandleFunc("/delete_event", func(w http.ResponseWriter, r *http.Request) {
 		handlers.DeleteEventHandler(w, r, cache)
 	})
+	mux.HandleFunc("/events_for_week", func(w http.ResponseWriter, r *http.Request) {
+		handlers.GetEventWeekHandler(w, r, cache)
+	})
+	mux.HandleFunc("/events_for_month", func(w http.ResponseWriter, r *http.Request) {
+		handlers.GetEventMonthHandler(w, r, cache)
+	})
 
 	handler := Logger(mux)
 
