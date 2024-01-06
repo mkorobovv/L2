@@ -10,10 +10,9 @@ import (
 	"github.com/mkorobovv/L2/develop/server/repo"
 )
 
-func DeleteEventHandler(w http.ResponseWriter, r *http.Request, c *repo.Cache) {
-
+func UpdateEventHandler(w http.ResponseWriter, r *http.Request, c *repo.Cache) {
 	if r.Method != http.MethodPost {
-		middleware.ErrorLogger(w, errors.New("method not supported"))
+		middleware.ErrorLogger(w, errors.New("method not allowed"))
 		return
 	}
 
@@ -27,9 +26,11 @@ func DeleteEventHandler(w http.ResponseWriter, r *http.Request, c *repo.Cache) {
 
 	date := decoded.Date
 	time := decoded.Time
+	id := decoded.UserId
+	desc := decoded.Description
 
-	c.Delete(date, time)
+	ev := middleware.NewEvent(desc, date, time, id)
 
-	middleware.ResponseLogger(w, "event succesfully deleted")
-
+	c.Update(date, time, ev)
+	middleware.ResponseLogger(w, "event successfuly updated")
 }

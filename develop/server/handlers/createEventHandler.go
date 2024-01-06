@@ -2,8 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
+	"errors"
 	"net/http"
 	"time"
 
@@ -15,7 +14,7 @@ import (
 func CreateEventHandler(w http.ResponseWriter, r *http.Request, c *repo.Cache) {
 
 	if r.Method != http.MethodPost {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		middleware.ErrorLogger(w, errors.New("method not supported"))
 		return
 	}
 
@@ -23,10 +22,9 @@ func CreateEventHandler(w http.ResponseWriter, r *http.Request, c *repo.Cache) {
 	var decoded models.Event
 
 	if err := decoder.Decode(&decoded); err != nil {
-		// TODO: make domain logger
+		middleware.ErrorLogger(w, err)
 		return
 	}
-	fmt.Fprintf(w, "Received event: %+v", decoded)
 
 	desc := decoded.Description
 	date := decoded.Date
@@ -34,17 +32,17 @@ func CreateEventHandler(w http.ResponseWriter, r *http.Request, c *repo.Cache) {
 	tt := decoded.Time
 
 	if _, errParse := time.Parse("2006-01-02", date); errParse != nil {
-		log.Println("Error parsing date query")
+		middleware.ErrorLogger(w, errParse)
 		return
 	}
 
 	if _, errParse := time.Parse("15:00", tt); errParse != nil {
-		log.Println("Error parsing time query")
+		middleware.ErrorLogger(w, errParse)
 		return
 	}
 
 	ev := middleware.NewEvent(desc, date, tt, id)
 	c.Create(ev)
 
-	log.Println("event succesfully created")
+	middleware.ResponseLogger(w, "event succesfully created")
 }

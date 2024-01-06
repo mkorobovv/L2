@@ -2,30 +2,31 @@ package handlers
 
 import (
 	"encoding/json"
-	"log"
+	"errors"
 	"net/http"
 	"time"
 
+	"github.com/mkorobovv/L2/develop/server/middleware"
 	"github.com/mkorobovv/L2/develop/server/repo"
 )
 
 func GetEventDayHandler(w http.ResponseWriter, r *http.Request, c *repo.Cache) {
 	if r.Method != http.MethodGet {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
+		middleware.ErrorLogger(w, errors.New("method not supported"))
 		return
 	}
 
 	dateQuery := r.URL.Query().Get("date")
 
 	if _, errParse := time.Parse("2006-01-02", dateQuery); errParse != nil {
-		log.Println("Error parsing date query")
+		middleware.ErrorLogger(w, errParse)
 		return
 	}
 
 	events := c.GetDay(dateQuery)
 	resp, err := json.MarshalIndent(events, "", "\t")
 	if err != nil {
-		log.Println("Error marshalling")
+		middleware.ErrorLogger(w, err)
 		return
 	}
 	w.Write(resp)
