@@ -1,15 +1,18 @@
 package middleware
 
 import (
-	"log"
-	"net/http"
-	"time"
+	time2 "time"
+
+	"github.com/mkorobovv/L2/develop/server/models"
 )
 
-func Logger(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		start := time.Now()
-		next.ServeHTTP(w, req)
-		log.Printf("%s %s %s", req.Method, req.RequestURI, time.Since(start))
-	})
+func NewEvent(des, date, time string, userId int) *models.Event {
+	uid := time2.Now().Unix()
+	return &models.Event{
+		UserId:      userId,
+		Date:        date,
+		Uid:         uid,
+		Description: des,
+		Time:        time,
+	}
 }

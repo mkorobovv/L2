@@ -1,11 +1,9 @@
 package models
 
 type Event struct {
-	UserId      uint   `json:"user_id"`
+	Uid         int64  `json:"uid"`
+	UserId      int    `json:"user_id"`
 	Date        string `json:"date"`
 	Description string `json:"description"`
-}
-
-type EventCalendar struct {
-	Events []*Event `json:"events"`
+	Time        string `json:"time"`
 }
